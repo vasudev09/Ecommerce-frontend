@@ -7,8 +7,9 @@ import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Lama Dev E-Commerce Application",
-  description: "A complete e-commerce application with Next.js and Wix",
+  title: "EZYSHOP - Shop Your Favourite Brands",
+  description:
+    "EZYSHOP is an online e-commerce platform offering a convenient shopping experience for a wide range of products.",
 };
 
 export default function RootLayout({
@@ -19,10 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar/>
+        <Navbar />
         {children}
-        <Footer/>
-        </body>
+        <Footer />
+      </body>
     </html>
   );
 }
