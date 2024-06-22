@@ -23,7 +23,7 @@ const ProductList = () => {
             className="absolute object-cover rounded-md"
           />
         </div>
-        <div className="flex jutify-between">
+        <div className="flex justify-between">
           <span className="font-medium">Product Name</span>
           <span className="font-semibold">$49</span>
         </div>
@@ -52,7 +52,7 @@ const ProductList = () => {
             className="absolute object-cover rounded-md"
           />
         </div>
-        <div className="flex jutify-between">
+        <div className="flex justify-between">
           <span className="font-medium">Product Name</span>
           <span className="font-semibold">$49</span>
         </div>
@@ -81,7 +81,7 @@ const ProductList = () => {
             className="absolute object-cover rounded-md"
           />
         </div>
-        <div className="flex jutify-between">
+        <div className="flex justify-between">
           <span className="font-medium">Product Name</span>
           <span className="font-semibold">$49</span>
         </div>
@@ -110,7 +110,7 @@ const ProductList = () => {
             className="absolute object-cover rounded-md"
           />
         </div>
-        <div className="flex jutify-between">
+        <div className="flex justify-between">
           <span className="font-medium">Product Name</span>
           <span className="font-semibold">$49</span>
         </div>
