@@ -1,8 +1,10 @@
 import Filter from "@/components/Filter";
 import ProductList from "@/components/ProductList";
 import Image from "next/image";
+import { Suspense } from "react";
+import Skeleton from "@/components/Skeleton";
 
-const ListPage = () => {
+const ListPage = async ({ searchParams }: { searchParams: any }) => {
   return (
     <div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative">
       {/* CAMPAIGN */}
@@ -24,7 +26,9 @@ const ListPage = () => {
       <Filter />
       {/* PRODUCTS */}
       <h1 className="mt-12 text-xl font-semibold">Shoes For You!</h1>
-      <ProductList />
+      <Suspense fallback={<Skeleton />}>
+        <ProductList searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 };
