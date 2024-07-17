@@ -5,6 +5,24 @@ import { Suspense } from "react";
 import Skeleton from "@/components/Skeleton";
 
 const ListPage = async ({ searchParams }: { searchParams: any }) => {
+  let categoryName = "";
+  if (searchParams.category) {
+    let category = await getCategory();
+    categoryName = category.title;
+  }
+  async function getCategory() {
+    const res = await fetch(
+      `http://127.0.0.1:8000/api/category/${searchParams.category}/`,
+      {
+        cache: "no-cache",
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Fetch Complete with bad status code" + res.status);
+    }
+    return res.json();
+  }
+
   return (
     <div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative">
       {/* CAMPAIGN */}
@@ -25,7 +43,9 @@ const ListPage = async ({ searchParams }: { searchParams: any }) => {
       {/* FILTER */}
       <Filter />
       {/* PRODUCTS */}
-      <h1 className="mt-12 text-xl font-semibold">Shoes For You!</h1>
+      <h1 className="mt-12 text-xl font-semibold">
+        {(categoryName ? categoryName : "All Products") + " For You!"}
+      </h1>
       <Suspense fallback={<Skeleton />}>
         <ProductList searchParams={searchParams} />
       </Suspense>

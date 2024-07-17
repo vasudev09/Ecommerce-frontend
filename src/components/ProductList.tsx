@@ -8,29 +8,44 @@ const ProductList = async ({
   searchParams,
 }: {
   category?: string;
-  limit?: number;
+  limit?: string;
   searchParams?: any;
 }) => {
   //FILTERS
-  let filters = {};
+  let filters = {
+    page: "",
+    category: "",
+    limit: "",
+  };
   if (category && limit) {
-    console.log("c", category, limit);
+    filters.category = category;
+    filters.limit = limit;
   } else if (searchParams) {
-    console.log("p", searchParams);
+    if (searchParams.page) {
+      filters.page = searchParams.page;
+    }
+    if (searchParams.category) {
+      filters.category = searchParams.category;
+    }
   }
-  console.log("s", searchParams === false);
+
   //FETCH
-  async function getProducts(filters: any) {
-    console.log("f", filters);
-    const res = await fetch("http://127.0.0.1:8000/api/products/", {
-      cache: "no-cache",
-    });
+  async function getProducts({ page, category, limit }: any) {
+    const res = await fetch(
+      `http://127.0.0.1:8000/api/products/?page=${page ? page : 1}${
+        category ? "&category=" + category : ""
+      }${limit ? "&limit=" + limit : ""}`,
+      {
+        cache: "no-cache",
+      }
+    );
     if (!res.ok) {
       throw new Error("Fetch Complete with bad status code" + res.status);
     }
     return res.json();
   }
   const data = await getProducts(filters);
+  console.log("d", data);
 
   if (data.count == 0) {
     return <>No Products Found!</>;
