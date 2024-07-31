@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 enum MODE {
   LOGIN = "LOGIN",
@@ -18,6 +20,15 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, SetMessage] = useState("");
+
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/list");
+    }
+  }, [isAuthenticated]);
 
   const formTitle =
     mode === MODE.LOGIN
@@ -39,15 +50,57 @@ const LoginPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError("");
-    try {
-    } catch (err) {
-      console.log(err);
-      setError("Something went wrong!");
-    } finally {
-      setIsLoading(false);
+    setIsLoading(true);
+    if (mode === MODE.REGISTER) {
+      let data = new FormData();
+      data.append("username", username);
+      data.append("email", email);
+      data.append("password", password);
+      try {
+        const res = await fetch(
+          "http://127.0.0.1:8000/api/customer/register/",
+          {
+            method: "POST",
+            body: data,
+          }
+        );
+        const content = await res.json();
+        if (res.ok) {
+          SetMessage(content.message);
+          setIsAuthenticated(true);
+          router.push("/list");
+        } else {
+          setError(content.message);
+        }
+      } catch (err) {
+        console.log(err);
+        setError("Something went wrong!");
+      }
     }
+    if (mode === MODE.LOGIN) {
+      let data = new FormData();
+      data.append("email", email);
+      data.append("password", password);
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/customer/login/", {
+          method: "POST",
+          credentials: "include",
+          body: data,
+        });
+        const content = await res.json();
+        if (res.ok) {
+          SetMessage(content.message);
+          router.push("/list");
+        } else {
+          setError(content.message);
+        }
+      } catch (err) {
+        console.log(err);
+        setError("Something went wrong!");
+      }
+    }
+    setIsLoading(false);
   };
 
   return (
@@ -63,6 +116,7 @@ const LoginPage = () => {
               type="text"
               name="username"
               placeholder="john"
+              required
               className="ring-2 ring-gray-300 rounded-md p-4"
               onChange={(e) => setUsername(e.target.value)}
             />
@@ -75,6 +129,7 @@ const LoginPage = () => {
               type="email"
               name="email"
               placeholder="john@gmail.com"
+              required
               className="ring-2 ring-gray-300 rounded-md p-4"
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -86,18 +141,20 @@ const LoginPage = () => {
               type="text"
               name="emailCode"
               placeholder="Code"
+              required
               className="ring-2 ring-gray-300 rounded-md p-4"
               onChange={(e) => setEmailCode(e.target.value)}
             />
           </div>
         )}
-        {mode === MODE.LOGIN || MODE.REGISTER ? (
+        {mode === MODE.LOGIN || mode === MODE.REGISTER ? (
           <div className="flex flex-col gap-2">
             <label className="text-sm text-gray-700">Password</label>
             <input
               type="password"
               name="password"
               placeholder="Enter your password"
+              required
               className="ring-2 ring-gray-300 rounded-md p-4"
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -106,13 +163,16 @@ const LoginPage = () => {
         {mode === MODE.LOGIN && (
           <div
             className="text-sm underline cursor-pointer"
-            onClick={() => setMode(MODE.RESET_PASSWORD)}
+            onClick={() => {
+              setMode(MODE.RESET_PASSWORD), setError(""), SetMessage("");
+            }}
           >
             Forgot Password?
           </div>
         )}
         <button
           disabled={isLoading}
+          type="submit"
           className="bg-primary text-white p-2 rounded-md disabled:bg-pink-200 disabled:cursor-not-allowed"
         >
           {isLoading ? "Loading..." : buttonTitle}
@@ -121,7 +181,9 @@ const LoginPage = () => {
         {mode === MODE.LOGIN && (
           <div
             className="text-sm underline cursor-pointer"
-            onClick={() => setMode(MODE.REGISTER)}
+            onClick={() => {
+              setMode(MODE.REGISTER), setError(""), SetMessage("");
+            }}
           >
             {"Don't"} have an account?
           </div>
@@ -129,7 +191,9 @@ const LoginPage = () => {
         {mode === MODE.REGISTER && (
           <div
             className="text-sm underline cursor-pointer"
-            onClick={() => setMode(MODE.LOGIN)}
+            onClick={() => {
+              setMode(MODE.LOGIN), setError(""), SetMessage("");
+            }}
           >
             Have an account?
           </div>
@@ -137,7 +201,9 @@ const LoginPage = () => {
         {mode === MODE.RESET_PASSWORD && (
           <div
             className="text-sm underline cursor-pointer"
-            onClick={() => setMode(MODE.LOGIN)}
+            onClick={() => {
+              setMode(MODE.LOGIN), setError(""), SetMessage("");
+            }}
           >
             Go back to Login
           </div>

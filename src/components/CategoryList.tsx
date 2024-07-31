@@ -5,15 +5,13 @@ const CategoryList = async () => {
   //FETCH
   let data = {};
   let count = 0;
-  try {
-    await fetch(`http://127.0.0.1:8000/api/categories/`, {
-      cache: "no-cache",
-    })
-      .then((response) => response.json())
-      .then((body) => ((data = body), (count = body.count)));
-  } catch (e) {
-    console.error(e);
-  }
+
+  await fetch(`http://127.0.0.1:8000/api/categories/`, {
+    cache: "no-cache",
+  })
+    .then((response) => response.json())
+    .then((body) => ((data = body), (count = body.count)))
+    .catch((error) => console.log(error));
 
   if (count == 0) {
     return <>No Categories Found!</>;

@@ -40,7 +40,7 @@ const ProductList = async ({
       }
     );
     if (!res.ok) {
-      throw new Error("Fetch Complete with bad status code" + res.status);
+      throw new Error("Fetch Complete with bad status code " + res.status);
     }
     return res.json();
   }
