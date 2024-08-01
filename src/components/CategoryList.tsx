@@ -7,6 +7,7 @@ const CategoryList = async () => {
   let count = 0;
 
   await fetch(`http://127.0.0.1:8000/api/categories/`, {
+    credentials: "include",
     cache: "no-cache",
   })
     .then((response) => response.json())
