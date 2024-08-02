@@ -40,14 +40,18 @@ const ProfileDetails = ({ closeActiveTab }: any) => {
   }
   return (
     <div className="bg-white w-full min-h-screen md:min-h-0 rounded-md md:border pt-5 absolute top-0 left-0 md:static">
-      <Image
-        className="mx-4 my-2 block md:hidden cursor-pointer"
-        src="/arrow-left.png"
-        width={26}
-        height={26}
-        alt=""
+      <div
+        className="block md:hidden cursor-pointer w-fit px-4 py-2"
         onClick={closeActiveTab}
-      />
+      >
+        <Image
+          className="block"
+          src="/arrow-left.png"
+          width={26}
+          height={26}
+          alt=""
+        />
+      </div>
       {profileMessage && <div className="p-2 text-center">profile message</div>}
       <div className="relative w-32 h-32 mx-auto">
         <Image src="/user.png" fill alt="" className="object-contain" />

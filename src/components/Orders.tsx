@@ -20,14 +20,18 @@ const Orders = ({ closeActiveTab }: any) => {
   return (
     <div className="py-4 w-full min-h-screen md:min-h-0 bg-white absolute top-0 left-0 md:static">
       <div className="flex flex-row items-center mb-4">
-        <Image
-          className="mx-4 my-2 block md:hidden cursor-pointer"
-          src="/arrow-left.png"
-          width={24}
-          height={24}
-          alt=""
+        <div
+          className="block md:hidden cursor-pointer w-fit px-4 py-2"
           onClick={closeActiveTab}
-        />
+        >
+          <Image
+            className="block"
+            src="/arrow-left.png"
+            width={24}
+            height={24}
+            alt=""
+          />
+        </div>
         <h2 className="text-xl font-semibold">Your Orders</h2>
       </div>
       {orders.length > 0 ? (

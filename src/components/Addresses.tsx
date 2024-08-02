@@ -170,14 +170,18 @@ const Addresses = ({ closeActiveTab }: any) => {
     <div className="py-4 w-full min-h-screen md:min-h-0 rounded-md bg-white absolute top-0 left-0 md:static">
       <div className="flex flex-row items-center justify-between mb-4 pr-4 md:pr-0">
         <div className="flex flex-row items-center">
-          <Image
-            className="mx-4 my-2 block md:hidden cursor-pointer"
-            src="/arrow-left.png"
-            width={24}
-            height={24}
-            alt=""
+          <div
+            className="block md:hidden cursor-pointer w-fit px-4 py-2"
             onClick={closeActiveTab}
-          />
+          >
+            <Image
+              className="block"
+              src="/arrow-left.png"
+              width={24}
+              height={24}
+              alt=""
+            />
+          </div>
           <h2 className="text-xl font-semibold">Addresses</h2>
         </div>
         <button
