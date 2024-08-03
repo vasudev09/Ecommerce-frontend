@@ -1,7 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const CategoryList = () => {
+const CategoryList = async () => {
+  //FETCH
+  let data = {};
+  let count = 0;
+
+  await fetch(`http://127.0.0.1:8000/api/categories/`, {
+    credentials: "include",
+    cache: "no-cache",
+  })
+    .then((response) => response.json())
+    .then((body) => ((data = body), (count = body.count)))
+    .catch((error) => console.log(error));
+
+  if (count == 0) {
+    return <>No Categories Found!</>;
+  }
+
   return (
     <div className="px-4 overflow-x-scroll scrollbar-hide">
       <div className="flex gap-4 md:gap-8">

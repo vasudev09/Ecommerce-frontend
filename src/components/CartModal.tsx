@@ -1,9 +1,11 @@
 "use client";
+import { useRouter } from "next/navigation";
 
 import Image from "next/image";
 
 const CartModal = () => {
   const cartItems = true;
+  const router = useRouter();
   return (
     <div className="w-max absolute p-4 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white top-12 right-0 flex flex-col gap-6 z-20">
       {!cartItems ? (
@@ -74,10 +76,20 @@ const CartModal = () => {
               Shipping and taxes calculated at checkout.
             </p>
             <div className="flex justify-between text-sm">
-              <button className="rounded-md py-3 px-4 ring-1 ring-gray-300">
+              <button
+                className="rounded-md py-3 px-4 ring-1 ring-gray-300"
+                onClick={() => {
+                  router.push("/cart");
+                }}
+              >
                 View Cart
               </button>
-              <button className="rounded-md py-3 px-4 bg-black text-white">
+              <button
+                className="rounded-md py-3 px-4 bg-black text-white"
+                onClick={() => {
+                  router.push("/checkout");
+                }}
+              >
                 Checkout
               </button>
             </div>

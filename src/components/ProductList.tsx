@@ -1,6 +1,75 @@
 import Link from "next/link";
 import Image from "next/image";
-const ProductList = () => {
+import Pagination from "./Pagination";
+
+const ProductList = async ({
+  category,
+  limit,
+  searchParams,
+}: {
+  category?: string;
+  limit?: string;
+  searchParams?: any;
+}) => {
+  //FILTERS
+  let filters = {
+    page: "",
+    category: "",
+    limit: "",
+  };
+  if (category && limit) {
+    filters.category = category;
+    filters.limit = limit;
+  } else if (searchParams) {
+    if (searchParams.page) {
+      filters.page = searchParams.page;
+    }
+    if (searchParams.category) {
+      filters.category = searchParams.category;
+    }
+  }
+
+  //FETCH
+  async function getProducts({ page, category, limit }: any) {
+    const res = await fetch(
+      `http://127.0.0.1:8000/api/products/?page=${page ? page : 1}${
+        category ? "&category=" + category : ""
+      }${limit ? "&limit=" + limit : ""}`,
+      {
+        cache: "no-cache",
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Fetch Complete with bad status code " + res.status);
+    }
+    return res.json();
+  }
+  const data = await getProducts(filters);
+  console.log("d", data);
+
+  if (data.count == 0) {
+    return <>No Products Found!</>;
+  }
+
+  // PAGINATION
+  let hasPrev = false;
+  let hasNext = false;
+  if (searchParams) {
+    if (searchParams.page) {
+      if (data.count > searchParams.page * 12) {
+        hasNext = true;
+      }
+      if (searchParams.page > 1) {
+        hasPrev = true;
+      }
+    } else {
+      if (data.count > 12) {
+        hasNext = true;
+      }
+      hasPrev = false;
+    }
+  }
+
   return (
     <div className="mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
       <Link
@@ -119,6 +188,13 @@ const ProductList = () => {
           Add to Cart
         </button>
       </Link>
+      {searchParams && (
+        <Pagination
+          currentPage={searchParams?.page || 1}
+          hasPrev={hasPrev}
+          hasNext={hasNext}
+        />
+      )}
     </div>
   );
 };
