@@ -30,36 +30,32 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
         <Add />
         <div className="h-[2px] bg-gray-100" />
         <div className="text-sm">
-          <h4 className="font-medium mb-4">Title</h4>
+          <h4 className="font-medium mb-4">PRODUCT INFO</h4>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur.
+            I'm a product detail. I'm a great place to add more information
+            about your product such as sizing, material, care and cleaning
+            instructions. This is also great space to write what makes this
+            product special and how your customers can benefit from this item.
           </p>
         </div>
         <div className="text-sm">
-          <h4 className="font-medium mb-4">Title</h4>
+          <h4 className="font-medium mb-4">RETURN & REFUND POLICY</h4>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur.
+            I'm a Return and Refund policy. I'm a great place to let your
+            customers know what to do in case they are dissatified with their
+            purchase. Having a straight forward refund or exchange policy is a
+            great way to build trust and reassure your customers that they can
+            buy with confidence.
           </p>
         </div>
         <div className="text-sm">
-          <h4 className="font-medium mb-4">Title</h4>
+          <h4 className="font-medium mb-4">SHIPPING INFO</h4>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur.
+            I'm a shipping policy. I'm a great place to add more information
+            about your shipping methods, packaging and cost. Providing straight
+            forward information about your shipping policy is a great way to
+            build trust and reassure your customers that they can buy with
+            confidence.
           </p>
         </div>
       </div>

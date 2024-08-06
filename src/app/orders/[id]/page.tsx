@@ -15,13 +15,17 @@ const OrderPage = async ({ params }: { params: { id: string } }) => {
     return <>Order Not Found!</>;
   } else {
     return (
-      <div className="flex flex-col h-[100vh] items-center justify-center">
+      <div className="flex flex-col my-4 items-center justify-center">
         <div className="md:shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px] md:px-40 md:py-20">
           <h1 className="text-xl">Order Details</h1>
           <div className="mt-12 flex flex-col gap-6">
             <div className="">
               <span className="font-medium">Order Id: </span>
               <span>{"order id"}</span>
+            </div>
+            <div className="">
+              <span className="font-medium">Order Date: </span>
+              <span>{"order date"}</span>
             </div>
             <div className="">
               <span className="font-medium">Receiver Name: </span>
