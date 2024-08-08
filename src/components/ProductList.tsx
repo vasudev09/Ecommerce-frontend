@@ -17,6 +17,12 @@ const ProductList = async ({
     category: "",
     tag: "",
     limit: "",
+    type: "",
+    min: "",
+    max: "",
+    size: "",
+    color: "",
+    sort: "",
   };
   if (tag && limit) {
     filters.tag = tag;
@@ -31,17 +37,50 @@ const ProductList = async ({
     if (searchParams.tag) {
       filters.tag = searchParams.tag;
     }
+    if (searchParams.type) {
+      filters.type = searchParams.type;
+    }
+    if (searchParams.min) {
+      filters.min = searchParams.min;
+    }
+    if (searchParams.max) {
+      filters.max = searchParams.max;
+    }
+    if (searchParams.size) {
+      filters.size = searchParams.size;
+    }
+    if (searchParams.color) {
+      filters.color = searchParams.color;
+    }
+    if (searchParams.sort) {
+      filters.sort = searchParams.sort;
+    }
   }
 
   let error = false;
   //FETCH
-  async function getProducts({ page, tag, category, limit }: any) {
+  async function getProducts({
+    page,
+    tag,
+    category,
+    limit,
+    type,
+    min,
+    max,
+    size,
+    color,
+    sort,
+  }: any) {
     try {
       const res = await fetch(
         `http://127.0.0.1:8000/api/products/?page=${page ? page : 1}${
           tag ? "&tag=" + tag : ""
         }${category ? "&category=" + category : ""}${
           limit ? "&limit=" + limit : ""
+        }${type ? "&type=" + type : ""}${min ? "&min=" + min : ""}${
+          max ? "&max=" + max : ""
+        }${size ? "&size=" + size : ""}${color ? "&color=" + color : ""}${
+          sort ? "&sort=" + sort : ""
         }`,
         {
           cache: "no-cache",
