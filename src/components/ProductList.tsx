@@ -28,6 +28,9 @@ const ProductList = async ({
     if (searchParams.category) {
       filters.category = searchParams.category;
     }
+    if (searchParams.tag) {
+      filters.tag = searchParams.tag;
+    }
   }
 
   let error = false;
@@ -80,43 +83,55 @@ const ProductList = async ({
 
   return (
     <div className="mt-12 flex gap-x-8 gap-y-16 flex-wrap">
-      {data.data.map((product: any, index: number) => (
-        <div
-          key={index}
-          className="w-full flex flex-col gap-4 sm:w-[45%] lg:w-[22%]"
-        >
-          <Link href={"/" + product.slug} className="flex flex-col gap-4">
-            <div className="relative w-full h-80">
-              <Image
-                src={product.images[0]}
-                alt=""
-                fill
-                sizes="25vw"
-                className="absolute object-cover rounded-md z-10 hover:opacity-0 transition-opacity easy duration-500"
-              />
-              <Image
-                src={product.images[1]}
-                alt=""
-                fill
-                sizes="25vw"
-                className="absolute object-cover rounded-md"
-              />
-            </div>
-            <div className="flex gap-1 justify-between">
-              <span className="font-medium">{product.title}</span>
-              <span className="font-semibold">
-                ₹{Math.floor(product.price)}
-              </span>
-            </div>
-            {product.short_info && (
-              <div className="text-sm text-gray-500">{product.short_info}</div>
-            )}
-          </Link>
-          <button className="rounded-2xl ring-1 ring-primary text-primary w-max py-2 px-4 text-xs hover:bg-primary hover:text-white">
-            Add to Cart
-          </button>
-        </div>
-      ))}
+      {data.data.map((product: any, index: number) => {
+        const hasDiscount = product.tags.some((tag: any) =>
+          [1, 2, 3].includes(tag.id)
+        );
+        return (
+          <div
+            key={index}
+            className="w-full flex flex-col justify-between gap-4 sm:w-[45%] lg:w-[22%]"
+          >
+            <Link href={"/" + product.slug} className="flex flex-col gap-3">
+              <div className="relative w-full h-80">
+                <Image
+                  src={product.images[0]}
+                  alt=""
+                  fill
+                  sizes="25vw"
+                  quality={100}
+                  className="absolute object-contain bg-white rounded-md z-10 hover:opacity-0 transition-opacity easy duration-500"
+                />
+                <Image
+                  src={product.images[1]}
+                  alt=""
+                  fill
+                  sizes="25vw"
+                  quality={100}
+                  className="absolute object-contain rounded-md"
+                />
+              </div>
+              <div className="flex gap-1 justify-between">
+                <span className="font-medium">{product.title}</span>
+                <span className="font-semibold">
+                  ₹{Math.floor(product.price)}
+                </span>
+              </div>
+              {hasDiscount && (
+                <div className="text-sm text-green-600">50% off</div>
+              )}
+              {product.short_info && (
+                <div className="text-sm text-gray-500">
+                  {product.short_info}
+                </div>
+              )}
+            </Link>
+            <button className="rounded-2xl ring-1 ring-primary text-primary w-max py-2 px-4 text-xs hover:bg-primary hover:text-white">
+              Add to Cart
+            </button>
+          </div>
+        );
+      })}
       {searchParams && (
         <Pagination
           currentPage={searchParams?.page || 1}
