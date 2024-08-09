@@ -12,7 +12,9 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const router = useRouter();
 
-  const [screenWidth, setScreenWidth] = useState<number>(window.innerWidth);
+  const [screenWidth, setScreenWidth] = useState<number>(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
 
   useEffect(() => {
     const handleResize = () => {

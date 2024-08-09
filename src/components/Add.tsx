@@ -1,7 +1,13 @@
 "use client";
 import { useState } from "react";
 
-const Add = () => {
+const Add = ({
+  color,
+  size,
+}: {
+  color: string | null;
+  size: string | null;
+}) => {
   const [quantity, setQuantity] = useState(1);
 
   //TEMPORARY

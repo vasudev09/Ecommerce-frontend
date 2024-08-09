@@ -1,18 +1,15 @@
-import Add from "@/components/Add";
-import CustomizeProducts from "@/components/CustomizeProducts";
 import ProductImages from "@/components/ProductImages";
+import ClientSideComponent from "@/components/ClientSideComponent";
 
-const SinglePage = async ({ params }: { params: { slug: string } }) => {
-  let product;
+const SinglePage = async ({ params }: { params: any }) => {
+  const slug = params?.slug as string;
+  let product = null;
   let error = true;
 
   try {
-    const res = await fetch(
-      `http://127.0.0.1:8000/api/product/${params.slug}/`,
-      {
-        cache: "no-cache",
-      }
-    );
+    const res = await fetch(`http://127.0.0.1:8000/api/product/${slug}/`, {
+      cache: "no-cache",
+    });
     if (res.ok) {
       product = await res.json();
       error = false;
@@ -42,8 +39,7 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
             <h2 className="font-medium text-2xl">₹{product.price}</h2>
           </div>
           <div className="h-[2px] bg-gray-100" />
-          <CustomizeProducts />
-          <Add />
+          <ClientSideComponent product={product} />
           <div className="h-[2px] bg-gray-100" />
           <div className="text-sm">
             <h4 className="font-medium mb-4">PRODUCT INFO</h4>
