@@ -32,8 +32,8 @@ const CheckoutPage = () => {
         <div>
           <div className="py-2 font-semibold">Address :</div>
           <div
-            className={`cursor-pointer ring-2 ring-gray-300 rounded-md text-sm py-1 px-2 ${
-              address == 0 ? "ring-blue-400" : ""
+            className={`cursor-pointer ring-2 rounded-md text-sm py-1 px-2 ${
+              address == 0 ? "ring-blue-400" : "ring-gray-300"
             }`}
             onClick={() => setAddress(0)}
           >
@@ -48,8 +48,8 @@ const CheckoutPage = () => {
             </p>
           </div>
           <div
-            className={`cursor-pointer ring-2 ring-gray-300 rounded-md text-sm py-1 px-2 mt-2 mb-4 ${
-              address == 1 ? "ring-blue-400" : ""
+            className={`cursor-pointer ring-2 rounded-md text-sm py-1 px-2 mt-2 mb-4 ${
+              address == 1 ? "ring-blue-400" : "ring-gray-300"
             }`}
             onClick={() => setAddress(1)}
           >
@@ -87,8 +87,8 @@ const CheckoutPage = () => {
           <div className="py-2 border-t  font-semibold">Payment method :</div>
           <div>
             <div
-              className={`py-2 px-3 mt-2 font-medium border flex flex-row items-center cursor-pointer hover:bg-slate-100 ${
-                payment == 0 ? "border-primary border-2" : ""
+              className={`py-2 px-3 mt-2 font-medium flex flex-row items-center cursor-pointer hover:bg-slate-100 ${
+                payment == 0 ? "border-primary border-2" : "border"
               }`}
               onClick={() => setPayment(0)}
             >
@@ -103,8 +103,8 @@ const CheckoutPage = () => {
               <div className="pl-3">Pay with Stripe</div>
             </div>
             <div
-              className={`py-2 px-3 mt-2 font-medium border flex flex-row items-center cursor-pointer hover:bg-slate-100 ${
-                payment == 1 ? "border-primary border-2" : ""
+              className={`py-2 px-3 mt-2 font-medium flex flex-row items-center cursor-pointer hover:bg-slate-100 ${
+                payment == 1 ? "border-primary border-2" : "border"
               }`}
               onClick={() => setPayment(1)}
             >

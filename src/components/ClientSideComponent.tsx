@@ -17,7 +17,7 @@ const ClientSideComponent = ({ product }: { product: any }) => {
         setSelectedColor={setSelectedColor}
         setSelectedSize={setSelectedSize}
       />
-      <Add color={selectedColor} size={selectedSize} />
+      <Add product={product} color={selectedColor} size={selectedSize} />
     </>
   );
 };

@@ -1,17 +1,34 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Add = ({
+  product,
   color,
   size,
 }: {
+  product: any;
   color: string | null;
   size: string | null;
 }) => {
   const [quantity, setQuantity] = useState(1);
+  const [stock, setStock] = useState<number>(0);
+  const [showMessage, setShowMessage] = useState<boolean>(false);
 
-  //TEMPORARY
-  const stock = 4;
+  useEffect(() => {
+    if (product && color && size) {
+      const variant = product.variants.find(
+        (v: any) => v.color === color && v.size === size
+      );
+      if (variant) {
+        setStock(variant.quantity);
+        const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const cartItem = localCart.find((item: any) => item.id === variant.id);
+        if (cartItem) {
+          setQuantity(cartItem.quantity);
+        }
+      }
+    }
+  }, [product, color, size]);
 
   const handleQuantity = (type: "i" | "d") => {
     if (type === "d" && quantity > 1) {
@@ -21,8 +38,50 @@ const Add = ({
       setQuantity((prev) => prev + 1);
     }
   };
+
+  const handleAddToCart = () => {
+    if (color && size) {
+      const variant = product.variants.find(
+        (v: any) => v.color === color && v.size === size
+      );
+      if (variant) {
+        const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const existingItemIndex = localCart.findIndex(
+          (item: any) => item.id === variant.id
+        );
+
+        if (existingItemIndex >= 0) {
+          localCart[existingItemIndex].quantity = quantity;
+        } else {
+          localCart.push({
+            product: product,
+            id: variant.id,
+            color,
+            size,
+            quantity,
+          });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(localCart));
+        setShowMessage(true);
+        setTimeout(() => setShowMessage(false), 2000);
+      }
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="relative flex flex-col gap-4">
+      <div
+        className={`absolute top-[-40px] left-0 w-full text-center py-2 rounded-md transition-transform duration-300 ease-in-out ${
+          showMessage
+            ? "translate-y-[15px] opacity-100"
+            : "translate-y-[30px] opacity-0"
+        }`}
+      >
+        <div className="bg-green-500 text-white px-4 py-2 rounded-md">
+          Added to Cart
+        </div>
+      </div>
       <h4 className="font-medium">Choose a Quantity</h4>
       <div className="flex justify-between">
         <div className="flex items-center gap-4">
@@ -41,12 +100,18 @@ const Add = ({
               +
             </button>
           </div>
-          <div className="text-xs">
-            Only <span className="text-orange-500">4 items</span> left!
-            <br /> {"Don't"} miss it
-          </div>
+          {stock <= 5 && stock > 0 && (
+            <div className="text-xs">
+              Only <span className="text-orange-500">{stock} items</span> left!
+              <br /> {"Don't"} miss it
+            </div>
+          )}
         </div>
-        <button className="w-36 text-sm rounded-3xl ring-1 ring-primary text-primary py-2 px-4 hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:text-white disabled:ring-none">
+        <button
+          onClick={handleAddToCart}
+          disabled={quantity > stock}
+          className="w-36 text-sm rounded-3xl ring-1 ring-primary text-primary py-2 px-4 hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:text-white disabled:ring-none"
+        >
           Add to Cart
         </button>
       </div>
