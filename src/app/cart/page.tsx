@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 const CartPage = () => {
-  const [cart, setCart] = useState<any[]>([]);
+  const [cart, setCart] = useState<any | null>(null);
   const router = useRouter();
   useEffect(() => {
     const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -40,10 +40,13 @@ const CartPage = () => {
   return (
     <div className="pt-8 pb-28 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
       <div className="text-2xl pb-4">Your Cart</div>
-      {cart.length == 0 && (
+      {cart === null && (
+        <div className="py-4 text-center border-t">Loading...</div>
+      )}
+      {cart !== null && cart.length === 0 && (
         <div className="py-4 text-center border-t">Cart is Empty</div>
       )}
-      {cart.length > 0 && (
+      {cart && cart.length > 0 && (
         <div className="w-full hidden md:block">
           <div className="py-4 flex flex-row items-start font-medium border-y">
             <div className="w-[65%] flex flex-row items-start">
@@ -57,8 +60,9 @@ const CartPage = () => {
           </div>
         </div>
       )}
-      {cart.length > 0 &&
-        cart.map((item, index) => (
+      {cart &&
+        cart.length > 0 &&
+        cart.map((item: any, index: number) => (
           <div
             key={index}
             className="w-full px-2 py-4 flex flex-col md:flex-row items-start md:items-center gap-5 md:gap-0 border-b"
@@ -148,7 +152,7 @@ const CartPage = () => {
         >
           CONTINUE SHOPPING
         </button>
-        {cart.length > 0 && (
+        {cart && cart.length > 0 && (
           <button
             type="button"
             className="py-2 px-4 bg-black text-white"

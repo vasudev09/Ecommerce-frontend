@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { loadStripe } from "@stripe/stripe-js";
 
 const CheckoutPage = () => {
   const { isAuthenticated } = useAuth();
@@ -83,6 +84,37 @@ const CheckoutPage = () => {
   const formatPrice = (price: any) => {
     const numberPrice = Number(price);
     return isNaN(numberPrice) ? "0.00" : numberPrice.toFixed(2);
+  };
+
+  const makePayment = async () => {
+    if (selectedPayment == 0) {
+      const stripe = await loadStripe(
+        "pk_test_51PmQNY07N87X9gnQd0cMOPdfjHezcHo4LcsFr9Tnmw5VkWntuXuar9WjnSSkBKt1OlkPiSgH0YvYBeblJdRh0ayH00dDJx5eVZ"
+      );
+      const addressedBill = {
+        ...verifiedBill,
+        address_id: selectedAddress,
+      };
+      try {
+        const res = await fetch(
+          "http://127.0.0.1:8000/api/stripe-checkout-session/",
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ addressedBill }),
+          }
+        );
+        const session = await res.json();
+        const result = await stripe?.redirectToCheckout({
+          sessionId: session.id,
+        });
+      } catch (e) {
+        console.log("Payment error:", e);
+      }
+    }
   };
 
   return (
@@ -209,6 +241,7 @@ const CheckoutPage = () => {
                 <button
                   type="button"
                   className="py-2 px-3 text-white bg-black border rounded-md"
+                  onClick={makePayment}
                 >
                   Proceed
                 </button>
