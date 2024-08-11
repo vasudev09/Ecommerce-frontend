@@ -1,15 +1,27 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const OrderPage = async ({ params }: { params: { id: string } }) => {
   let error = false;
+  let auth = false;
+  let order = null;
   try {
     const res = await fetch(`http://127.0.0.1:8000/api/order/`, {
       cache: "no-cache",
     });
-    const body = await res.json();
+    if (res.ok) {
+      auth = true;
+      order = await res.json();
+    } else {
+      error = true;
+    }
   } catch (e) {
     console.log(e);
     error = true;
+  }
+
+  if (!auth) {
+    redirect("/login");
   }
   if (error) {
     return <>Order Not Found!</>;

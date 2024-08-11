@@ -6,6 +6,7 @@ import Image from "next/image";
 import Addresses from "@/components/Addresses";
 import Orders from "@/components/Orders";
 import ProfileDetails from "@/components/ProfileDetails";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const ProfilePage = () => {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
@@ -15,6 +16,12 @@ const ProfilePage = () => {
   const [screenWidth, setScreenWidth] = useState<number>(
     typeof window !== "undefined" ? window.innerWidth : 1024
   );
+
+  useEffect(() => {
+    if (isAuthenticated == false) {
+      router.push("/login");
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,10 +67,8 @@ const ProfilePage = () => {
     }
   }
 
-  if (!isAuthenticated) {
-    return <div className="h-10"></div>;
-  } else {
-    return (
+  return (
+    <LoadingSpinner addCondition={"authFalse"}>
       <div className="flex flex-col md:flex-row justify-between items-start relative pt-8 pb-28 px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64">
         <div className="w-full py-8 block md:hidden">
           <div className="relative w-32 h-32 mx-auto">
@@ -114,8 +119,8 @@ const ProfilePage = () => {
           {activeTab === "Orders" && <Orders closeActiveTab={closeActiveTab} />}
         </div>
       </div>
-    );
-  }
+    </LoadingSpinner>
+  );
 };
 
 export default ProfilePage;
