@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { loadStripe } from "@stripe/stripe-js";
+import DotPulseButton from "@/components/DotPulseButton";
 
 const CheckoutPage = () => {
   const { isAuthenticated } = useAuth();
@@ -17,7 +18,8 @@ const CheckoutPage = () => {
   const [addressError, setAddressError] = useState<boolean | null>(null);
   const [verifiedBill, setVerifiedBill] = useState<any>();
   const [billError, setBillError] = useState<boolean | null>(null);
-
+  const [loading1, setLoading1] = useState<boolean>(false);
+  const [loading2, setLoading2] = useState<boolean>(false);
   useEffect(() => {
     if (isAuthenticated == false) {
       router.push("/login");
@@ -88,6 +90,7 @@ const CheckoutPage = () => {
 
   const makePayment = async () => {
     if (selectedPayment == 0) {
+      setLoading2(true);
       const stripe = await loadStripe(
         "pk_test_51PmQNY07N87X9gnQd0cMOPdfjHezcHo4LcsFr9Tnmw5VkWntuXuar9WjnSSkBKt1OlkPiSgH0YvYBeblJdRh0ayH00dDJx5eVZ"
       );
@@ -113,6 +116,8 @@ const CheckoutPage = () => {
         });
       } catch (e) {
         console.log("Payment error:", e);
+      } finally {
+        setLoading2(false);
       }
     }
   };
@@ -171,7 +176,9 @@ const CheckoutPage = () => {
                     <div className="max-w-[275px]">
                       {product.product_title} x{product.quantity}
                     </div>
-                    <div>{"₹" + formatPrice(product.price)}</div>
+                    <div>
+                      {"₹" + formatPrice(product.price * product.quantity)}
+                    </div>
                   </div>
                 ))}
                 <div className="flex flex-row items-center justify-between text-sm mt-2">
@@ -233,17 +240,36 @@ const CheckoutPage = () => {
               <div className="flex flex-row items-center justify-between py-4 my-4 border-t">
                 <button
                   type="button"
-                  className="py-2 px-3 border rounded-md"
-                  onClick={() => router.push("/list")}
+                  className="py-2 px-3 border rounded-md relative"
+                  onClick={() => {
+                    setLoading1(true);
+                    router.push("/list");
+                  }}
+                  disabled={loading2}
                 >
-                  Cancel
+                  {"Cancel"}
+                  {loading1 && (
+                    <DotPulseButton
+                      color="black"
+                      bgColor="white"
+                      borderRadius="6px"
+                    />
+                  )}
                 </button>
                 <button
                   type="button"
-                  className="py-2 px-3 text-white bg-black border rounded-md"
+                  className="py-2 px-3 text-white bg-black border rounded-md relative"
                   onClick={makePayment}
+                  disabled={loading1 || loading2}
                 >
-                  Proceed
+                  {"Proceed"}
+                  {loading2 && (
+                    <DotPulseButton
+                      color="white"
+                      bgColor="black"
+                      borderRadius="6px"
+                    />
+                  )}
                 </button>
               </div>
             </>

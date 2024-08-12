@@ -2,10 +2,13 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import DotPulseButton from "@/components/DotPulseButton";
 
 const CartPage = () => {
   const [cart, setCart] = useState<any | null>(null);
   const router = useRouter();
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
   useEffect(() => {
     const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
     setCart(localCart);
@@ -147,18 +150,40 @@ const CartPage = () => {
       <div className="flex flex-row items-center justify-between mx-2 my-4">
         <button
           type="button"
-          className="py-2 px-4 bg-primary text-white"
-          onClick={() => router.push("/list")}
+          className="py-2 px-4 bg-primary text-white relative"
+          disabled={loading2}
+          onClick={() => {
+            setLoading1(true);
+            router.push("/list");
+          }}
         >
-          CONTINUE SHOPPING
+          {"CONTINUE SHOPPING"}
+          {loading1 && (
+            <DotPulseButton
+              color="white"
+              bgColor="#F35C7A"
+              borderRadius="0px"
+            />
+          )}
         </button>
         {cart && cart.length > 0 && (
           <button
             type="button"
-            className="py-2 px-4 bg-black text-white"
-            onClick={() => router.push("/checkout")}
+            className="py-2 px-4 bg-black text-white relative"
+            disabled={loading1}
+            onClick={() => {
+              setLoading2(true);
+              router.push("/checkout");
+            }}
           >
-            PROCEED
+            {"PROCEED"}
+            {loading2 && (
+              <DotPulseButton
+                color="white"
+                bgColor="black"
+                borderRadius="0px"
+              />
+            )}
           </button>
         )}
       </div>

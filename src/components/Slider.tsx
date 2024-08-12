@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import DotPulseButton from "./DotPulseButton";
 
 const slides = [
   {
@@ -33,6 +34,7 @@ const slides = [
 
 const Slider = () => {
   const [current, setCurrent] = useState(0);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
@@ -59,8 +61,18 @@ const Slider = () => {
                 {slide.title}
               </h1>
               <Link href={slide.url}>
-                <button className="rounded-md bg-black text-white py-3 px-4">
-                  SHOP NOW
+                <button
+                  className="rounded-md bg-black text-white py-3 px-4 relative"
+                  onClick={() => setLoading(true)}
+                >
+                  {"SHOP NOW"}
+                  {loading && (
+                    <DotPulseButton
+                      color="white"
+                      bgColor="black"
+                      borderRadius="6px"
+                    />
+                  )}
                 </button>
               </Link>
             </div>

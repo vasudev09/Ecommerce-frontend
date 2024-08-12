@@ -1,11 +1,14 @@
 "use client";
 import { useRouter } from "next/navigation";
-
+import { useState } from "react";
 import Image from "next/image";
+import DotPulseButton from "./DotPulseButton";
 
 const CartModal = () => {
   const cartItems = true;
   const router = useRouter();
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
   return (
     <div className="w-max absolute p-4 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white top-12 right-0 flex flex-col gap-6 z-20">
       {!cartItems ? (
@@ -77,20 +80,38 @@ const CartModal = () => {
             </p>
             <div className="flex justify-between text-sm">
               <button
-                className="rounded-md py-3 px-4 ring-1 ring-gray-300"
+                className="rounded-md py-3 px-4 ring-1 ring-gray-300 relative"
+                disabled={loading2}
                 onClick={() => {
+                  setLoading1(true);
                   router.push("/cart");
                 }}
               >
-                View Cart
+                {"View Cart"}
+                {loading1 && (
+                  <DotPulseButton
+                    color="black"
+                    bgColor="white"
+                    borderRadius="6px"
+                  />
+                )}
               </button>
               <button
-                className="rounded-md py-3 px-4 bg-black text-white"
+                className="rounded-md py-3 px-4 bg-black text-white relative"
+                disabled={loading1}
                 onClick={() => {
+                  setLoading2(true);
                   router.push("/checkout");
                 }}
               >
-                Checkout
+                {"Checkout"}
+                {loading2 && (
+                  <DotPulseButton
+                    color="white"
+                    bgColor="black"
+                    borderRadius="6px"
+                  />
+                )}
               </button>
             </div>
           </div>
