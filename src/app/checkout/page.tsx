@@ -171,8 +171,11 @@ const CheckoutPage = () => {
               </div>
               <div>
                 <div className="py-2 font-semibold border-t">Bill :</div>
-                {verifiedBill.products.map((product: any) => (
-                  <div className="flex flex-row items-start justify-between gap-10 text-sm mt-2">
+                {verifiedBill.products.map((product: any, index: number) => (
+                  <div
+                    key={index}
+                    className="flex flex-row items-start justify-between gap-10 text-sm mt-2"
+                  >
                     <div className="max-w-[275px]">
                       {product.product_title} x{product.quantity}
                     </div>

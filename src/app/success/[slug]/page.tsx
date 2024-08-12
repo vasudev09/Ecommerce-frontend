@@ -52,6 +52,7 @@ const SuccessPage = ({ params }: { params: any }) => {
       } else {
         setError(true);
       }
+      localStorage.removeItem("cart");
     } catch (e) {
       setError(true);
     }

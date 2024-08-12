@@ -9,6 +9,7 @@ const SinglePage = async ({ params }: { params: any }) => {
   try {
     const res = await fetch(`http://127.0.0.1:8000/api/product/${slug}/`, {
       cache: "no-cache",
+      credentials: "include",
     });
     if (res.ok) {
       product = await res.json();
@@ -19,7 +20,7 @@ const SinglePage = async ({ params }: { params: any }) => {
   }
 
   if (error) {
-    return <>Product Not Found!</>;
+    return <div className="text-center py-2">Product Not Found!</div>;
   } else
     return (
       <div className="px-4 md:px-8 lg:px-16 xl:px-32 2xl:px-64 flex flex-col lg:flex-row gap-16 pt-8">
