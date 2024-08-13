@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import DotPulseButton from "./DotPulseButton";
@@ -7,6 +7,7 @@ import DotPulseButton from "./DotPulseButton";
 const CartModal = () => {
   const cartItems = true;
   const router = useRouter();
+  const pathname = usePathname();
   const [loading1, setLoading1] = useState(false);
   const [loading2, setLoading2] = useState(false);
   return (
@@ -79,25 +80,27 @@ const CartModal = () => {
               Shipping and taxes calculated at checkout.
             </p>
             <div className="flex justify-between text-sm">
+              {pathname !== "/cart" && (
+                <button
+                  className="rounded-md py-3 px-4 ring-1 ring-gray-300 relative"
+                  disabled={loading2}
+                  onClick={() => {
+                    setLoading1(true);
+                    router.push("/cart");
+                  }}
+                >
+                  {"View Cart"}
+                  {loading1 && (
+                    <DotPulseButton
+                      color="black"
+                      bgColor="white"
+                      borderRadius="6px"
+                    />
+                  )}
+                </button>
+              )}
               <button
-                className="rounded-md py-3 px-4 ring-1 ring-gray-300 relative"
-                disabled={loading2}
-                onClick={() => {
-                  setLoading1(true);
-                  router.push("/cart");
-                }}
-              >
-                {"View Cart"}
-                {loading1 && (
-                  <DotPulseButton
-                    color="black"
-                    bgColor="white"
-                    borderRadius="6px"
-                  />
-                )}
-              </button>
-              <button
-                className="rounded-md py-3 px-4 bg-black text-white relative"
+                className="rounded-md py-3 px-4 bg-black text-white ml-auto relative"
                 disabled={loading1}
                 onClick={() => {
                   setLoading2(true);
