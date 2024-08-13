@@ -83,6 +83,7 @@ const ProfilePage = () => {
   async function getCustomer() {
     try {
       const res = await fetch("http://127.0.0.1:8000/api/customer/profile/", {
+        cache: "no-cache",
         credentials: "include",
       });
       if (res.ok) {
@@ -96,6 +97,7 @@ const ProfilePage = () => {
   async function getAddresses() {
     try {
       const res = await fetch("http://127.0.0.1:8000/api/address/", {
+        cache: "no-cache",
         credentials: "include",
       });
       if (res.ok) {
@@ -109,6 +111,7 @@ const ProfilePage = () => {
   async function getOrders() {
     try {
       const res = await fetch("http://127.0.0.1:8000/api/orders/", {
+        cache: "no-cache",
         credentials: "include",
       });
       if (res.ok) {

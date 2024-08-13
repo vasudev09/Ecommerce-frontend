@@ -54,7 +54,7 @@ const Orders = ({ closeActiveTab }: any) => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order, index) => (
+            {orders.map((order: any, index: number) => (
               <tr key={order.id} className="even:bg-slate-100">
                 <td className="p-4 text-sm text-gray-700">{order.id}</td>
                 <td className="p-4 text-sm text-gray-700">{order.orderDate}</td>

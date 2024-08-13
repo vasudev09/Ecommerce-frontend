@@ -276,7 +276,7 @@ const Addresses = ({ closeActiveTab }: any) => {
 
       {addresses.length > 0 ? (
         <ul>
-          {addresses.map((address, index) => (
+          {addresses.map((address: any, index: number) => (
             <li key={index} className="border-b py-3 text-sm px-4 md:px-2">
               <div className="flex flex-row items-center justify-between flex-wrap">
                 <div className="mr-2">

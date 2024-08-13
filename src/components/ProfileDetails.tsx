@@ -1,41 +1,76 @@
 import { useState } from "react";
 import Image from "next/image";
-const ProfileDetails = ({ closeActiveTab }: any) => {
+import DotPulseButton from "./DotPulseButton";
+const ProfileDetails = ({ closeActiveTab, profile }: any) => {
   const [profileMessage, setProfileMessage] = useState("");
   const [changePasswordInput, setChangePasswordInput] = useState(false);
   const [changeMobileInput, setChangeMobileInput] = useState(false);
+  const [password, setPassword] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
 
   async function changePassword() {
-    try {
-      const res = await fetch(`http://127.0.0.1:8000/api/customer/logout/`, {
-        credentials: "include",
-        cache: "no-cache",
-      });
-      const data = await res.json();
-      if (res.ok) {
-        // setIsAuthenticated(false);
-        // router.push("/");
-        setProfileMessage("Password Change Successfull!");
+    if (password.length > 7) {
+      try {
+        setLoading1(true);
+        let data = new FormData();
+        data.append("password", password);
+        const res = await fetch(
+          `http://127.0.0.1:8000/api/customer/change-password/`,
+          {
+            method: "POST",
+            credentials: "include",
+            body: data,
+          }
+        );
+        if (res.ok) {
+          setProfileMessage("Password Change Successfull!");
+          setPassword("");
+        } else {
+          setProfileMessage("Something went wrong while updating password.");
+        }
+      } catch (e) {
+        console.log(e);
+        setProfileMessage("Something went wrong while updating password.");
+      } finally {
+        setLoading1(false);
       }
-    } catch (e) {
-      console.log(e);
+    } else {
+      setProfileMessage("Please enter atleast 8 characters.");
     }
   }
 
   async function changeMobile() {
-    try {
-      const res = await fetch(`http://127.0.0.1:8000/api/customer/logout/`, {
-        credentials: "include",
-        cache: "no-cache",
-      });
-      const data = await res.json();
-      if (res.ok) {
-        // setIsAuthenticated(false);
-        // router.push("/");
-        setProfileMessage("Mobile Change Successfull!");
+    let isnum = /^\d+$/.test(mobile);
+    if (mobile.length == 10 && isnum) {
+      try {
+        setLoading2(true);
+        let data = new FormData();
+        data.append("mobile", mobile);
+        const res = await fetch(
+          `http://127.0.0.1:8000/api/customer/change-mobile/`,
+          {
+            method: "POST",
+            credentials: "include",
+            body: data,
+          }
+        );
+        if (res.ok) {
+          setProfileMessage("Mobile Change Successfull!");
+          setMobile("");
+          window.location.reload();
+        } else {
+          setProfileMessage("Something went wrong while updating mobile.");
+        }
+      } catch (e) {
+        console.log(e);
+        setProfileMessage("Something went wrong while updating mobile.");
+      } finally {
+        setLoading2(false);
       }
-    } catch (e) {
-      console.log(e);
+    } else {
+      setProfileMessage("Please enter 10 digits.");
     }
   }
   return (
@@ -52,18 +87,22 @@ const ProfileDetails = ({ closeActiveTab }: any) => {
           alt=""
         />
       </div>
-      {profileMessage && <div className="p-2 text-center">profile message</div>}
+      {profileMessage && (
+        <div className="p-2 text-center">{profileMessage}</div>
+      )}
       <div className="relative w-32 h-32 mx-auto">
         <Image src="/user.png" fill alt="" className="object-contain" />
       </div>
       <div className="pt-16 md:pl-[10%]">
         <div className="mb-8 px-4 flex flex-col md:flex-row">
           <div className="min-w-36 mb-1 font-semibold">Username :</div>
-          <div className="">John Doe</div>
+          <div className="">
+            {profile?.username ? profile.username : "**username**"}
+          </div>
         </div>
         <div className="mb-10 px-4 flex flex-col md:flex-row">
           <div className="min-w-36 mb-1 font-semibold">Email :</div>
-          <div className="">johndoe1234@gmail.com</div>
+          <div className="">{profile?.email ? profile.email : "**email**"}</div>
         </div>
         <div className="mb-10 px-4 flex flex-col md:flex-row">
           <div className="min-w-36 mb-1 font-semibold">Password :</div>
@@ -74,19 +113,33 @@ const ProfileDetails = ({ closeActiveTab }: any) => {
                 name="password"
                 placeholder="Enter new password"
                 className="ring-1 ring-gray-300 rounded-md p-1.5"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <div>
                 <button
                   type="button"
-                  className="cursor-pointer bg-primary text-white rounded-md py-1.5 px-2"
+                  className="cursor-pointer bg-primary text-white rounded-md py-1.5 px-2 relative"
                   onClick={() => changePassword()}
+                  disabled={loading1}
                 >
                   Update
+                  {loading1 && (
+                    <DotPulseButton
+                      color="white"
+                      bgColor="#F35C7A"
+                      borderRadius="6px"
+                    />
+                  )}
                 </button>
                 <button
                   type="button"
                   className="cursor-pointer rounded-md py-1.5 px-2"
-                  onClick={() => setChangePasswordInput(false)}
+                  onClick={() => {
+                    setChangePasswordInput(false);
+                    setPassword("");
+                    setProfileMessage("");
+                  }}
                 >
                   Cancel
                 </button>
@@ -113,19 +166,32 @@ const ProfileDetails = ({ closeActiveTab }: any) => {
                 name="password"
                 placeholder="Enter new mobile"
                 className="ring-1 ring-gray-300 rounded-md p-1.5"
+                value={mobile}
+                onChange={(e) => setMobile(e.target.value)}
               />
               <div>
                 <button
                   type="button"
-                  className="cursor-pointer bg-primary text-white rounded-md py-1.5 px-2"
+                  className="cursor-pointer bg-primary text-white rounded-md py-1.5 px-2 relative"
                   onClick={() => changeMobile()}
+                  disabled={loading2}
                 >
                   Update
+                  {loading2 && (
+                    <DotPulseButton
+                      color="white"
+                      bgColor="#F35C7A"
+                      borderRadius="6px"
+                    />
+                  )}
                 </button>
                 <button
                   type="button"
                   className="cursor-pointer rounded-md py-1.5 px-2"
-                  onClick={() => setChangeMobileInput(false)}
+                  onClick={() => {
+                    setChangeMobileInput(false);
+                    setProfileMessage("");
+                  }}
                 >
                   Cancel
                 </button>
@@ -133,7 +199,7 @@ const ProfileDetails = ({ closeActiveTab }: any) => {
             </div>
           ) : (
             <div>
-              <span>+91 - {"9091836476"}</span>
+              <span>+91 - {profile?.mobile ? profile.mobile : ""}</span>
               <span
                 className="ml-6 text-primary cursor-pointer"
                 onClick={() => setChangeMobileInput(true)}
