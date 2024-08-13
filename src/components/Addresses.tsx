@@ -1,12 +1,51 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import DotPulseButton from "./DotPulseButton";
 
-const Addresses = ({ closeActiveTab }: any) => {
+const states = [
+  { value: "", label: "Select State" },
+  { value: "AP", label: "Andhra Pradesh" },
+  { value: "AR", label: "Arunachal Pradesh" },
+  { value: "AS", label: "Assam" },
+  { value: "BR", label: "Bihar" },
+  { value: "CG", label: "Chhattisgarh" },
+  { value: "GA", label: "Goa" },
+  { value: "GJ", label: "Gujarat" },
+  { value: "HR", label: "Haryana" },
+  { value: "HP", label: "Himachal Pradesh" },
+  { value: "JH", label: "Jharkhand" },
+  { value: "KA", label: "Karnataka" },
+  { value: "KL", label: "Kerala" },
+  { value: "MP", label: "Madhya Pradesh" },
+  { value: "MH", label: "Maharashtra" },
+  { value: "MN", label: "Manipur" },
+  { value: "ML", label: "Meghalaya" },
+  { value: "MZ", label: "Mizoram" },
+  { value: "NL", label: "Nagaland" },
+  { value: "OR", label: "Odisha" },
+  { value: "PB", label: "Punjab" },
+  { value: "RJ", label: "Rajasthan" },
+  { value: "SK", label: "Sikkim" },
+  { value: "TN", label: "Tamil Nadu" },
+  { value: "TG", label: "Telangana" },
+  { value: "TR", label: "Tripura" },
+  { value: "UP", label: "Uttar Pradesh" },
+  { value: "UT", label: "Uttarakhand" },
+  { value: "WB", label: "West Bengal" },
+  { value: "AN", label: "Andaman and Nicobar Islands" },
+  { value: "CH", label: "Chandigarh" },
+  { value: "DN", label: "Dadra and Nagar Haveli and Daman and Diu" },
+  { value: "LD", label: "Lakshadweep" },
+  { value: "DL", label: "Delhi" },
+  { value: "PY", label: "Puducherry" },
+];
+
+const Addresses = ({ closeActiveTab, addresses }: any) => {
   const [addressMessage, setAddressMessage] = useState("");
   const [addAddress, setAddAddress] = useState(false);
   const [editForm, setEditForm] = useState<number | null>(null);
   const [formData, setFormData] = useState({
-    name: "",
+    address_name: "",
     building: "",
     area: "",
     pincode: "",
@@ -14,37 +53,8 @@ const Addresses = ({ closeActiveTab }: any) => {
     state: "",
   });
 
-  let addresses = [
-    {
-      name: "Home",
-      building: "123A/45, First Floor",
-      area: "Main Street, ABC Colony",
-      pincode: "560001",
-      city: "Banglore",
-      state: "KA",
-    },
-    {
-      name: "Home2",
-      building: "123A/45, First Floor",
-      area: "Main Street, ABC Colony",
-      pincode: "560001",
-      city: "Hyderabad",
-      state: "AP",
-    },
-  ];
-  useEffect(() => {
-    fetchAddresses();
-  }, []);
-
-  function fetchAddresses() {
-    fetch("http://127.0.0.1/api/addresses", {
-      credentials: "include",
-      cache: "no-cache",
-    })
-      .then((response) => response.json())
-      .then((body) => (addresses = body))
-      .catch((error) => console.log(error));
-  }
+  const [loading1, setLoading1] = useState(false);
+  const [loadingAddressId, setLoadingAddressId] = useState<number | null>(null);
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -56,44 +66,112 @@ const Addresses = ({ closeActiveTab }: any) => {
 
   async function submitAddress(e: any) {
     e.preventDefault();
+    setLoading1(true);
     let data = new FormData();
     for (const [key, value] of Object.entries(formData)) {
       data.append(key, value);
     }
     try {
-      const res = await fetch("http://127.0.0.1/api/address", {
+      const res = await fetch("http://127.0.0.1:8000/api/address/", {
         method: "POST",
         credentials: "include",
         body: data,
       });
-      const resData = await res.json();
       if (res.ok) {
         setAddressMessage("Address added successfully!");
+        setFormData({
+          address_name: "",
+          building: "",
+          area: "",
+          pincode: "",
+          city: "",
+          state: "",
+        });
+        setAddAddress(false);
+        window.location.reload();
+      } else {
+        setAddressMessage("Your address failed to add.");
       }
     } catch (e) {
       console.log(e);
+      setAddressMessage("Your address failed to add.");
+    } finally {
+      setLoading1(false);
     }
   }
 
-  function handleEdit(index: number) {
+  function handleEdit(id: number) {
     setAddAddress(false);
-    setEditForm(index);
-    setFormData(addresses[index]);
+    setEditForm(id);
+    setAddressMessage("");
+    setFormData(addresses.data.find((address: any) => address.id === id));
   }
 
-  async function handleDelete(index: number) {
-    console.log(index);
+  async function handleDelete(id: any) {
+    setLoadingAddressId(id);
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/address/${id}/`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        setAddressMessage("Address Deleted successfully!");
+        window.location.reload();
+      } else {
+        setAddressMessage("Your address failed to delete.");
+      }
+    } catch (e) {
+      console.log(e);
+      setAddressMessage("Your address failed to delete.");
+    } finally {
+      setLoadingAddressId(null);
+    }
   }
 
   async function editFormSubmit(e: any) {
     e.preventDefault();
+    setLoading1(true);
+    let data = new FormData();
+    for (const [key, value] of Object.entries(formData)) {
+      data.append(key, value);
+    }
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/address/${editForm}/`,
+        {
+          method: "PUT",
+          credentials: "include",
+          body: data,
+        }
+      );
+      if (res.ok) {
+        setAddressMessage("Address Updated successfully!");
+        setFormData({
+          address_name: "",
+          building: "",
+          area: "",
+          pincode: "",
+          city: "",
+          state: "",
+        });
+        setEditForm(null);
+        window.location.reload();
+      } else {
+        setAddressMessage("Your address failed to update.");
+      }
+    } catch (e) {
+      console.log(e);
+      setAddressMessage("Your address failed to update.");
+    } finally {
+      setLoading1(false);
+    }
   }
 
   const addressform = [
     {
       label: "Address Name :",
       type: "text",
-      name: "name",
+      name: "address_name",
       placeholder: "Home",
     },
     {
@@ -128,44 +206,6 @@ const Addresses = ({ closeActiveTab }: any) => {
     },
   ];
 
-  const states = [
-    { value: "", label: "Select State" },
-    { value: "AP", label: "Andhra Pradesh" },
-    { value: "AR", label: "Arunachal Pradesh" },
-    { value: "AS", label: "Assam" },
-    { value: "BR", label: "Bihar" },
-    { value: "CG", label: "Chhattisgarh" },
-    { value: "GA", label: "Goa" },
-    { value: "GJ", label: "Gujarat" },
-    { value: "HR", label: "Haryana" },
-    { value: "HP", label: "Himachal Pradesh" },
-    { value: "JH", label: "Jharkhand" },
-    { value: "KA", label: "Karnataka" },
-    { value: "KL", label: "Kerala" },
-    { value: "MP", label: "Madhya Pradesh" },
-    { value: "MH", label: "Maharashtra" },
-    { value: "MN", label: "Manipur" },
-    { value: "ML", label: "Meghalaya" },
-    { value: "MZ", label: "Mizoram" },
-    { value: "NL", label: "Nagaland" },
-    { value: "OR", label: "Odisha" },
-    { value: "PB", label: "Punjab" },
-    { value: "RJ", label: "Rajasthan" },
-    { value: "SK", label: "Sikkim" },
-    { value: "TN", label: "Tamil Nadu" },
-    { value: "TG", label: "Telangana" },
-    { value: "TR", label: "Tripura" },
-    { value: "UP", label: "Uttar Pradesh" },
-    { value: "UT", label: "Uttarakhand" },
-    { value: "WB", label: "West Bengal" },
-    { value: "AN", label: "Andaman and Nicobar Islands" },
-    { value: "CH", label: "Chandigarh" },
-    { value: "DN", label: "Dadra and Nagar Haveli and Daman and Diu" },
-    { value: "LD", label: "Lakshadweep" },
-    { value: "DL", label: "Delhi" },
-    { value: "PY", label: "Puducherry" },
-  ];
-
   return (
     <div className="py-4 w-full min-h-screen md:min-h-0 rounded-md bg-white absolute top-0 left-0 md:static">
       <div className="flex flex-row items-center justify-between mb-4 pr-4 md:pr-0">
@@ -191,8 +231,9 @@ const Addresses = ({ closeActiveTab }: any) => {
           onClick={() => {
             setAddAddress(true);
             setEditForm(null);
+            setAddressMessage("");
             setFormData({
-              name: "",
+              address_name: "",
               building: "",
               area: "",
               pincode: "",
@@ -204,9 +245,6 @@ const Addresses = ({ closeActiveTab }: any) => {
           + Add New
         </button>
       </div>
-      {addressMessage && (
-        <div className="p-2 text-center">Address added successfully!</div>
-      )}
 
       {addAddress && (
         <form
@@ -249,9 +287,16 @@ const Addresses = ({ closeActiveTab }: any) => {
           <div className="p-2 flex flex-row justify-between items-center">
             <button
               type="submit"
-              className="py-2 px-4 bg-primary rounded-md text-white"
+              className="py-2 px-4 bg-primary rounded-md text-white relative"
             >
-              ADD
+              {"ADD"}
+              {loading1 && (
+                <DotPulseButton
+                  color="white"
+                  bgColor="#F35C7A"
+                  borderRadius="6px"
+                />
+              )}
             </button>
             <button
               type="reset"
@@ -259,7 +304,7 @@ const Addresses = ({ closeActiveTab }: any) => {
               onClick={() => {
                 setAddAddress(false);
                 setFormData({
-                  name: "",
+                  address_name: "",
                   building: "",
                   area: "",
                   pincode: "",
@@ -271,16 +316,19 @@ const Addresses = ({ closeActiveTab }: any) => {
               Cancel
             </button>
           </div>
+          {addressMessage && (
+            <div className="p-2 text-center">{addressMessage}</div>
+          )}
         </form>
       )}
 
-      {addresses.length > 0 ? (
+      {addresses?.data?.length > 0 ? (
         <ul>
-          {addresses.map((address, index) => (
+          {addresses.data.map((address: any, index: number) => (
             <li key={index} className="border-b py-3 text-sm px-4 md:px-2">
               <div className="flex flex-row items-center justify-between flex-wrap">
                 <div className="mr-2">
-                  <p className=" font-semibold">{address.name}</p>
+                  <p className=" font-semibold">{address.address_name}</p>
                   <p>
                     {address.building}
                     {", "}
@@ -298,22 +346,29 @@ const Addresses = ({ closeActiveTab }: any) => {
                 </div>
                 <div className="my-2">
                   <button
-                    disabled={index == editForm}
+                    disabled={address.id == editForm}
                     className="py-1.5 px-4 border rounded-md disabled:bg-gray-100 disabled:cursor-not-allowed"
-                    onClick={() => handleEdit(index)}
+                    onClick={() => handleEdit(address.id)}
                   >
                     Edit
                   </button>
                   <button
-                    disabled={index == editForm}
-                    className="p-1.5 ml-2 bg-primary  text-white rounded-md disabled:bg-pink-200 disabled:cursor-not-allowed"
-                    onClick={() => handleDelete(index)}
+                    disabled={address.id == editForm}
+                    className="p-1.5 ml-2 bg-primary text-white rounded-md disabled:bg-pink-200 disabled:cursor-not-allowed relative"
+                    onClick={() => handleDelete(address.id)}
                   >
-                    Delete
+                    {"Delete"}
+                    {address.id == loadingAddressId && (
+                      <DotPulseButton
+                        color="white"
+                        bgColor="#F35C7A"
+                        borderRadius="6px"
+                      />
+                    )}
                   </button>
                 </div>
               </div>
-              {index == editForm && (
+              {address.id == editForm && (
                 <form
                   onSubmit={(e) => editFormSubmit(e)}
                   className="border rounded-md"
@@ -354,9 +409,16 @@ const Addresses = ({ closeActiveTab }: any) => {
                   <div className="p-2 flex flex-row justify-between items-center">
                     <button
                       type="submit"
-                      className="py-2 px-4 bg-primary rounded-md text-white"
+                      className="py-2 px-4 bg-primary rounded-md text-white relative"
                     >
-                      Update
+                      {"Update"}
+                      {loading1 && (
+                        <DotPulseButton
+                          color="white"
+                          bgColor="#F35C7A"
+                          borderRadius="6px"
+                        />
+                      )}
                     </button>
                     <button
                       type="reset"
@@ -368,6 +430,9 @@ const Addresses = ({ closeActiveTab }: any) => {
                       Cancel
                     </button>
                   </div>
+                  {addressMessage && (
+                    <div className="p-2 text-center">{addressMessage}</div>
+                  )}
                 </form>
               )}
             </li>

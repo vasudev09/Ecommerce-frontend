@@ -26,14 +26,14 @@ const Pagination = ({
       <button
         className="rounded-md bg-primary text-white p-2 text-sm w-24 cursor-pointer disabled:cursor-not-allowed disabled:bg-pink-200"
         disabled={!hasPrev}
-        onClick={() => createPageUrl(currentPage - 1)}
+        onClick={() => createPageUrl(Number(currentPage) - 1)}
       >
         Previous
       </button>
       <button
         className="rounded-md bg-primary text-white p-2 text-sm w-24 cursor-pointer disabled:cursor-not-allowed disabled:bg-pink-200"
         disabled={!hasNext}
-        onClick={() => createPageUrl(currentPage + 1)}
+        onClick={() => createPageUrl(Number(currentPage) + 1)}
       >
         Next
       </button>

@@ -7,20 +7,20 @@ import Skeleton from "@/components/Skeleton";
 const ListPage = async ({ searchParams }: { searchParams: any }) => {
   let categoryName = "";
   if (searchParams.category) {
-    let category = await getCategory();
-    categoryName = category.title;
-  }
-  async function getCategory() {
-    const res = await fetch(
-      `http://127.0.0.1:8000/api/category/${searchParams.category}/`,
-      {
-        cache: "no-cache",
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/category/${searchParams.category}/`,
+        {
+          cache: "no-cache",
+        }
+      );
+      if (res.ok) {
+        const category = await res.json();
+        categoryName = category.title;
       }
-    );
-    if (!res.ok) {
-      throw new Error("Fetch Complete with bad status code " + res.status);
+    } catch (e) {
+      console.log(e);
     }
-    return res.json();
   }
 
   return (

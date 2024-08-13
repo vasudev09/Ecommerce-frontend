@@ -1,27 +1,44 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const OrderPage = async ({ params }: { params: { id: string } }) => {
   let error = false;
+  let order = null;
+
   try {
-    const res = await fetch(`http://127.0.0.1:8000/api/order/`, {
+    const res = await fetch(`http://127.0.0.1:8000/api/order/${params.id}/`, {
       cache: "no-cache",
+      credentials: "include",
     });
-    const body = await res.json();
+
+    if (res.status === 401) {
+      redirect("/login");
+    }
+    if (res.ok) {
+      order = await res.json();
+    } else {
+      error = true;
+    }
   } catch (e) {
     console.log(e);
     error = true;
   }
+
   if (error) {
-    return <>Order Not Found!</>;
+    return <div className="text-center py-2">Order Not Found!</div>;
   } else {
     return (
-      <div className="flex flex-col h-[100vh] items-center justify-center">
+      <div className="flex flex-col my-4 items-center justify-center">
         <div className="md:shadow-[rgba(0,_0,_0,_0.25)_0px_25px_50px_-12px] md:px-40 md:py-20">
           <h1 className="text-xl">Order Details</h1>
           <div className="mt-12 flex flex-col gap-6">
             <div className="">
               <span className="font-medium">Order Id: </span>
-              <span>{"order id"}</span>
+              <span>{order.id}</span>
+            </div>
+            <div className="">
+              <span className="font-medium">Order Date: </span>
+              <span>{order.order_time}</span>
             </div>
             <div className="">
               <span className="font-medium">Receiver Name: </span>
@@ -32,24 +49,28 @@ const OrderPage = async ({ params }: { params: { id: string } }) => {
               <span>{"email"}</span>
             </div>
             <div className="">
+              <span className="font-medium">Order Items: </span>
+              <span>{"order items"}</span>
+            </div>
+            <div className="">
               <span className="font-medium">Price: </span>
-              <span>{"amount"}</span>
+              <span>{Number(order.total_amount).toFixed(2)}</span>
             </div>
             <div className="">
               <span className="font-medium">Payment Status: </span>
-              <span>{"status"}</span>
+              <span>{order.payment_staus}</span>
             </div>
             <div className="">
               <span className="font-medium">Order Status: </span>
-              <span>{"status"}</span>
+              <span>{order.order_status}</span>
             </div>
             <div className="">
               <span className="font-medium">Delivery Address: </span>
-              <span>{"address"}</span>
+              <span>{order.address}</span>
             </div>
           </div>
         </div>
-        <Link href="/" className="underline mt-6">
+        <Link href="/contact" className="underline mt-6">
           Have a problem? Contact us
         </Link>
       </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import DotPulseButton from "@/components/DotPulseButton";
 
 enum MODE {
   LOGIN = "LOGIN",
@@ -173,9 +174,16 @@ const LoginPage = () => {
         <button
           disabled={isLoading}
           type="submit"
-          className="bg-primary text-white p-2 rounded-md disabled:bg-pink-200 disabled:cursor-not-allowed"
+          className="bg-primary text-white p-2 rounded-md relative"
         >
-          {isLoading ? "Loading..." : buttonTitle}
+          {buttonTitle}
+          {isLoading && (
+            <DotPulseButton
+              color="white"
+              bgColor="#F35C7A"
+              borderRadius="6px"
+            />
+          )}
         </button>
         {error && <div className="text-red-600">{error}</div>}
         {mode === MODE.LOGIN && (

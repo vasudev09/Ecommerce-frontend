@@ -2,15 +2,24 @@
 import { useAuth } from "@/context/AuthContext";
 
 const LoadingSpinner = ({
+  addCondition,
   children,
 }: Readonly<{
+  addCondition?: string;
   children: React.ReactNode;
 }>) => {
   const { isAuthenticated } = useAuth();
 
+  const shouldShowSpinner =
+    addCondition === "authFalse"
+      ? isAuthenticated === false ||
+        isAuthenticated == null ||
+        isAuthenticated == undefined
+      : isAuthenticated == null || isAuthenticated == undefined;
+
   return (
     <>
-      {isAuthenticated == null || isAuthenticated == undefined ? (
+      {shouldShowSpinner ? (
         <div className="flex items-center justify-center min-h-screen">
           <div className="spinner"></div>
           <style jsx>{`
