@@ -55,11 +55,17 @@ const CustomizeProducts = ({
     <div className="flex flex-col gap-6">
       <h4 className="font-medium">Choose a color</h4>
       <ul className="flex items-center gap-3">
-        {["Red", "Blue", "Green"].map((color) => {
+        {["Red", "Blue", "Green"].map((color, index) => {
           return (
             <li
               key={color}
-              className={`w-8 h-8 rounded-full ring-1 ring-gray-300 relative bg-${color.toLowerCase()}-500 ${
+              className={`w-8 h-8 rounded-full ring-1 ring-gray-300 relative ${
+                index == 0
+                  ? "bg-red-500"
+                  : index == 1
+                  ? "bg-blue-500"
+                  : "bg-green-500"
+              } ${
                 availableColors.includes(color)
                   ? "cursor-pointer"
                   : "cursor-not-allowed"

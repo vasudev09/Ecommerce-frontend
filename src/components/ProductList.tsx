@@ -23,6 +23,7 @@ const ProductList = async ({
     size: "",
     color: "",
     sort: "",
+    search: "",
   };
   if (tag && limit) {
     filters.tag = tag;
@@ -55,6 +56,9 @@ const ProductList = async ({
     if (searchParams.sort) {
       filters.sort = searchParams.sort;
     }
+    if (searchParams.search) {
+      filters.search = searchParams.search;
+    }
   }
 
   let error = false;
@@ -70,18 +74,19 @@ const ProductList = async ({
     size,
     color,
     sort,
+    search,
   }: any) {
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/products/?page=${page ? page : 1}${
-          tag ? "&tag=" + tag : ""
-        }${category ? "&category=" + category : ""}${
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/?page=${
+          page ? page : 1
+        }${tag ? "&tag=" + tag : ""}${category ? "&category=" + category : ""}${
           limit ? "&limit=" + limit : ""
         }${type ? "&type=" + type : ""}${min ? "&min=" + min : ""}${
           max ? "&max=" + max : ""
         }${size ? "&size=" + size : ""}${color ? "&color=" + color : ""}${
           sort ? "&sort=" + sort : ""
-        }`,
+        }${search ? "&search=" + search : ""}`,
         {
           cache: "no-cache",
         }
@@ -165,9 +170,12 @@ const ProductList = async ({
                 </div>
               )}
             </Link>
-            <button className="rounded-2xl ring-1 ring-primary text-primary w-max py-2 px-4 text-xs hover:bg-primary hover:text-white">
+            <Link
+              href={"/" + product.slug}
+              className="block rounded-2xl ring-1 ring-primary text-primary w-max py-2 px-4 text-xs hover:bg-primary hover:text-white"
+            >
               Add to Cart
-            </button>
+            </Link>
           </div>
         );
       })}

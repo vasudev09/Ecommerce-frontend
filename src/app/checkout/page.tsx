@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { loadStripe } from "@stripe/stripe-js";
 import DotPulseButton from "@/components/DotPulseButton";
+import { useLocalCart } from "@/context/CartContext";
 
 const CheckoutPage = () => {
   const { isAuthenticated } = useAuth();
@@ -20,6 +21,8 @@ const CheckoutPage = () => {
   const [billError, setBillError] = useState<boolean | null>(null);
   const [loading1, setLoading1] = useState<boolean>(false);
   const [loading2, setLoading2] = useState<boolean>(false);
+  const { localCart, setLocalCart } = useLocalCart();
+
   useEffect(() => {
     if (isAuthenticated == false) {
       router.push("/login");
@@ -27,7 +30,6 @@ const CheckoutPage = () => {
   }, [isAuthenticated]);
 
   useEffect(() => {
-    const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
     if (localCart.length == 0) {
       setEmptyCart(true);
     } else {
@@ -39,14 +41,17 @@ const CheckoutPage = () => {
 
   async function verifyCart(cart: any) {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/bill/", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ cart }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/bill/`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ cart }),
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         setVerifiedBill(data);
@@ -62,10 +67,13 @@ const CheckoutPage = () => {
 
   async function getAddresses() {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/address/ ", {
-        cache: "no-cache",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/`,
+        {
+          cache: "no-cache",
+          credentials: "include",
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         if (data.count > 0) {
@@ -91,16 +99,20 @@ const CheckoutPage = () => {
   const makePayment = async () => {
     if (selectedPayment == 0) {
       setLoading2(true);
-      const stripe = await loadStripe(
-        "pk_test_51PmQNY07N87X9gnQd0cMOPdfjHezcHo4LcsFr9Tnmw5VkWntuXuar9WjnSSkBKt1OlkPiSgH0YvYBeblJdRh0ayH00dDJx5eVZ"
-      );
+      const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY;
+      if (!stripePublicKey) {
+        console.error("Stripe public key is not defined");
+        setLoading2(false);
+        return;
+      }
+      const stripe = await loadStripe(stripePublicKey);
       const addressedBill = {
         ...verifiedBill,
         address_id: selectedAddress,
       };
       try {
         const res = await fetch(
-          "http://127.0.0.1:8000/api/stripe-checkout-session/",
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/stripe-checkout-session/`,
           {
             method: "POST",
             credentials: "include",

@@ -2,29 +2,62 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import CartModal from "./CartModal";
+import { useAuth } from "@/context/AuthContext";
+import { useLocalCart } from "@/context/CartContext";
 
 const NavIcons = () => {
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
+  const { localCart, setLocalCart } = useLocalCart();
+  const [shouldRender, setShouldRender] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
-  //TEMPORARY
-  const isLoggedIn = false;
+  const { isAuthenticated } = useAuth();
 
   const handleProfile = () => {
-    if (!isLoggedIn) {
-      router.push("/login");
+    if (isAuthenticated) {
+      setIsCartOpen(false);
+      router.push("/profile");
     } else {
-      setIsProfileOpen((prev) => !prev);
+      setIsCartOpen(false);
+      router.push("/login");
     }
   };
 
-  const handleLogout = () => {};
+  const handleCartOpen = () => {
+    if (localCart.length > 0) {
+      setIsCartOpen((prev) => !prev);
+    } else {
+      router.push("/cart");
+    }
+  };
+
+  useEffect(() => {
+    setShouldRender(true);
+    setIsCartOpen(false);
+  }, [pathname]);
+
+  if (!shouldRender) {
+    return null;
+  }
+
+  if (pathname === "/checkout") {
+    return (
+      <div className="flex items-center gap-4 xl:gap-6">
+        <Image
+          src="/profile.png"
+          alt=""
+          width={22}
+          height={22}
+          className="cursor-pointer"
+          onClick={handleProfile}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-4 xl:gap-6 relative">
@@ -36,31 +69,15 @@ const NavIcons = () => {
         className="cursor-pointer"
         onClick={handleProfile}
       />
-      {isProfileOpen && (
-        <div className="absolute p-4 rounded-md top-12 left-0 bg-white text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)] z-20">
-          <Link href="/profile">Profile</Link>
-          <div className="mt-2 cursor-pointer" onClick={handleLogout}>
-            {isLoading ? "Logging out" : "Logout"}
-          </div>
-        </div>
-      )}
-      <Image
-        src="/notification.png"
-        alt=""
-        width={22}
-        height={22}
-        className="cursor-pointer"
-      />
-      <div
-        className="relative cursor-pointer"
-        onClick={() => setIsCartOpen((prev) => !prev)}
-      >
+      <div className="relative cursor-pointer" onClick={() => handleCartOpen()}>
         <Image src="/cart.png" alt="" width={22} height={22} />
-        <div className="absolute -top-4 -right-4 w-6 h-6 bg-primary rounded-full text-white text-sm flex items-center justify-center">
-          2
-        </div>
+        {localCart?.length > 0 && (
+          <div className="absolute -top-4 -right-4 w-6 h-6 bg-primary rounded-full text-white text-sm flex items-center justify-center">
+            {localCart.length}
+          </div>
+        )}
       </div>
-      {isCartOpen && <CartModal />}
+      {isCartOpen && localCart.length > 0 && <CartModal />}
     </div>
   );
 };

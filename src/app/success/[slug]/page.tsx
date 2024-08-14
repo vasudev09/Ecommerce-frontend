@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useState, useEffect } from "react";
+import { useLocalCart } from "@/context/CartContext";
 
 const SuccessPage = ({ params }: { params: any }) => {
   const router = useRouter();
@@ -12,6 +13,7 @@ const SuccessPage = ({ params }: { params: any }) => {
   const [orderId, setOrderId] = useState("");
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [error, setError] = useState<boolean | null>(null);
+  const { localCart, setLocalCart } = useLocalCart();
 
   const slug = params?.slug as string;
 
@@ -40,11 +42,14 @@ const SuccessPage = ({ params }: { params: any }) => {
 
   async function getOrderID(slug: string) {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/get-order-id/", {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify({ session_id: slug }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/get-order-id/`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify({ session_id: slug }),
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         setOrderId(data.order_id);
@@ -52,7 +57,7 @@ const SuccessPage = ({ params }: { params: any }) => {
       } else {
         setError(true);
       }
-      localStorage.removeItem("cart");
+      setLocalCart([]);
     } catch (e) {
       setError(true);
     }

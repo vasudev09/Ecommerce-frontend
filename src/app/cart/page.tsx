@@ -3,21 +3,23 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DotPulseButton from "@/components/DotPulseButton";
+import { useLocalCart } from "@/context/CartContext";
 
 const CartPage = () => {
   const [cart, setCart] = useState<any | null>(null);
   const router = useRouter();
   const [loading1, setLoading1] = useState(false);
   const [loading2, setLoading2] = useState(false);
+  const { localCart, setLocalCart } = useLocalCart();
+
   useEffect(() => {
-    const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
     setCart(localCart);
-  }, []);
+  }, [localCart]);
 
   const handleRemoveItem = (id: number) => {
     const updatedCart = cart.filter((item: any) => item.id !== id);
     setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    setLocalCart(updatedCart);
   };
 
   const handleQuantityChange = (id: number, type: "increase" | "decrease") => {
@@ -37,7 +39,7 @@ const CartPage = () => {
       return item;
     });
     setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    setLocalCart(updatedCart);
   };
 
   return (

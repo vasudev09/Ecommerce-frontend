@@ -5,10 +5,13 @@ const CategoryList = async () => {
   let data;
   let error = false;
   try {
-    const res = await fetch(`http://127.0.0.1:8000/api/categories/`, {
-      credentials: "include",
-      cache: "no-cache",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/categories/`,
+      {
+        credentials: "include",
+        cache: "no-cache",
+      }
+    );
     if (!res.ok) {
       error = true;
     } else {

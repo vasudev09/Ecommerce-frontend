@@ -7,10 +7,13 @@ const SinglePage = async ({ params }: { params: any }) => {
   let error = true;
 
   try {
-    const res = await fetch(`http://127.0.0.1:8000/api/product/${slug}/`, {
-      cache: "no-cache",
-      credentials: "include",
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/product/${slug}/`,
+      {
+        cache: "no-cache",
+        credentials: "include",
+      }
+    );
     if (res.ok) {
       product = await res.json();
       error = false;
