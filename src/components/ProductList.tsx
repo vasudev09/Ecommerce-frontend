@@ -78,9 +78,9 @@ const ProductList = async ({
   }: any) {
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/products/?page=${page ? page : 1}${
-          tag ? "&tag=" + tag : ""
-        }${category ? "&category=" + category : ""}${
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/?page=${
+          page ? page : 1
+        }${tag ? "&tag=" + tag : ""}${category ? "&category=" + category : ""}${
           limit ? "&limit=" + limit : ""
         }${type ? "&type=" + type : ""}${min ? "&min=" + min : ""}${
           max ? "&max=" + max : ""

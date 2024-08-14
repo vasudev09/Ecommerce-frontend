@@ -113,10 +113,13 @@ const Addresses = ({ closeActiveTab, addresses }: any) => {
   async function handleDelete(id: any) {
     setLoadingAddressId(id);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/address/${id}/`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/${id}/`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
       if (res.ok) {
         setAddressMessage("Address Deleted successfully!");
         window.location.reload();
@@ -140,7 +143,7 @@ const Addresses = ({ closeActiveTab, addresses }: any) => {
     }
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/api/address/${editForm}/`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/${editForm}/`,
         {
           method: "PUT",
           credentials: "include",

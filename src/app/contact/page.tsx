@@ -16,11 +16,14 @@ const ContactPage = () => {
       data.append("user_name", username);
       data.append("email", email);
       data.append("description", description);
-      const res = await fetch("http://127.0.0.1:8000/api/customer/contact/", {
-        method: "POST",
-        credentials: "include",
-        body: data,
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/customer/contact/`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: data,
+        }
+      );
       if (res.ok) {
         setMessage("Successful.");
       } else {

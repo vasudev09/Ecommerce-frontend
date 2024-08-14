@@ -17,7 +17,7 @@ const ProfileDetails = ({ closeActiveTab, profile }: any) => {
         let data = new FormData();
         data.append("password", password);
         const res = await fetch(
-          `http://127.0.0.1:8000/api/customer/change-password/`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/customer/change-password/`,
           {
             method: "POST",
             credentials: "include",
@@ -49,7 +49,7 @@ const ProfileDetails = ({ closeActiveTab, profile }: any) => {
         let data = new FormData();
         data.append("mobile", mobile);
         const res = await fetch(
-          `http://127.0.0.1:8000/api/customer/change-mobile/`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/customer/change-mobile/`,
           {
             method: "POST",
             credentials: "include",

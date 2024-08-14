@@ -64,10 +64,13 @@ const ProfilePage = () => {
   async function handleLogout() {
     try {
       setLoading(true);
-      const res = await fetch(`http://127.0.0.1:8000/api/customer/logout/`, {
-        credentials: "include",
-        cache: "no-cache",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/customer/logout/`,
+        {
+          credentials: "include",
+          cache: "no-cache",
+        }
+      );
       const data = await res.json();
       if (res.ok) {
         setIsAuthenticated(false);
@@ -82,10 +85,13 @@ const ProfilePage = () => {
 
   async function getCustomer() {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/customer/profile/", {
-        cache: "no-cache",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/customer/profile/`,
+        {
+          cache: "no-cache",
+          credentials: "include",
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         setProfile(data);
@@ -96,10 +102,13 @@ const ProfilePage = () => {
   }
   async function getAddresses() {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/address/", {
-        cache: "no-cache",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/`,
+        {
+          cache: "no-cache",
+          credentials: "include",
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         setAddresses(data);
@@ -110,10 +119,13 @@ const ProfilePage = () => {
   }
   async function getOrders() {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/orders/", {
-        cache: "no-cache",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders/`,
+        {
+          cache: "no-cache",
+          credentials: "include",
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         setOrders(data);

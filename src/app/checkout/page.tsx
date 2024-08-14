@@ -41,14 +41,17 @@ const CheckoutPage = () => {
 
   async function verifyCart(cart: any) {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/bill/", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ cart }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/bill/`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ cart }),
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         setVerifiedBill(data);
@@ -64,10 +67,13 @@ const CheckoutPage = () => {
 
   async function getAddresses() {
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/address/ ", {
-        cache: "no-cache",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/`,
+        {
+          cache: "no-cache",
+          credentials: "include",
+        }
+      );
       if (res.ok) {
         const data = await res.json();
         if (data.count > 0) {
@@ -106,7 +112,7 @@ const CheckoutPage = () => {
       };
       try {
         const res = await fetch(
-          "http://127.0.0.1:8000/api/stripe-checkout-session/",
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/stripe-checkout-session/`,
           {
             method: "POST",
             credentials: "include",
