@@ -72,11 +72,14 @@ const Addresses = ({ closeActiveTab, addresses }: any) => {
       data.append(key, value);
     }
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/address/", {
-        method: "POST",
-        credentials: "include",
-        body: data,
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: data,
+        }
+      );
       if (res.ok) {
         setAddressMessage("Address added successfully!");
         setFormData({

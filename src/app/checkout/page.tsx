@@ -93,9 +93,13 @@ const CheckoutPage = () => {
   const makePayment = async () => {
     if (selectedPayment == 0) {
       setLoading2(true);
-      const stripe = await loadStripe(
-        "pk_test_51PmQNY07N87X9gnQd0cMOPdfjHezcHo4LcsFr9Tnmw5VkWntuXuar9WjnSSkBKt1OlkPiSgH0YvYBeblJdRh0ayH00dDJx5eVZ"
-      );
+      const stripePublicKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY;
+      if (!stripePublicKey) {
+        console.error("Stripe public key is not defined");
+        setLoading2(false);
+        return;
+      }
+      const stripe = await loadStripe(stripePublicKey);
       const addressedBill = {
         ...verifiedBill,
         address_id: selectedAddress,
