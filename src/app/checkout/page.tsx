@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { loadStripe } from "@stripe/stripe-js";
 import DotPulseButton from "@/components/DotPulseButton";
+import { useLocalCart } from "@/context/CartContext";
 
 const CheckoutPage = () => {
   const { isAuthenticated } = useAuth();
@@ -20,6 +21,8 @@ const CheckoutPage = () => {
   const [billError, setBillError] = useState<boolean | null>(null);
   const [loading1, setLoading1] = useState<boolean>(false);
   const [loading2, setLoading2] = useState<boolean>(false);
+  const { localCart, setLocalCart } = useLocalCart();
+
   useEffect(() => {
     if (isAuthenticated == false) {
       router.push("/login");
@@ -27,7 +30,6 @@ const CheckoutPage = () => {
   }, [isAuthenticated]);
 
   useEffect(() => {
-    const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
     if (localCart.length == 0) {
       setEmptyCart(true);
     } else {

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useState, useEffect } from "react";
+import { useLocalCart } from "@/context/CartContext";
 
 const SuccessPage = ({ params }: { params: any }) => {
   const router = useRouter();
@@ -12,6 +13,7 @@ const SuccessPage = ({ params }: { params: any }) => {
   const [orderId, setOrderId] = useState("");
   const [screenWidth, setScreenWidth] = useState<number>(0);
   const [error, setError] = useState<boolean | null>(null);
+  const { localCart, setLocalCart } = useLocalCart();
 
   const slug = params?.slug as string;
 
@@ -52,7 +54,7 @@ const SuccessPage = ({ params }: { params: any }) => {
       } else {
         setError(true);
       }
-      localStorage.removeItem("cart");
+      setLocalCart([]);
     } catch (e) {
       setError(true);
     }

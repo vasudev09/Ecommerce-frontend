@@ -6,10 +6,11 @@ import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import CartModal from "./CartModal";
 import { useAuth } from "@/context/AuthContext";
+import { useLocalCart } from "@/context/CartContext";
 
 const NavIcons = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const { localCart, setLocalCart } = useLocalCart();
 
   const router = useRouter();
   const pathname = usePathname();
@@ -23,6 +24,14 @@ const NavIcons = () => {
     } else {
       setIsCartOpen(false);
       router.push("/login");
+    }
+  };
+
+  const handleCartOpen = () => {
+    if (localCart.length > 0) {
+      setIsCartOpen((prev) => !prev);
+    } else {
+      router.push("/cart");
     }
   };
 
@@ -55,16 +64,15 @@ const NavIcons = () => {
         className="cursor-pointer"
         onClick={handleProfile}
       />
-      <div
-        className="relative cursor-pointer"
-        onClick={() => setIsCartOpen((prev) => !prev)}
-      >
+      <div className="relative cursor-pointer" onClick={() => handleCartOpen()}>
         <Image src="/cart.png" alt="" width={22} height={22} />
-        <div className="absolute -top-4 -right-4 w-6 h-6 bg-primary rounded-full text-white text-sm flex items-center justify-center">
-          {cartCount}
-        </div>
+        {localCart?.length > 0 && (
+          <div className="absolute -top-4 -right-4 w-6 h-6 bg-primary rounded-full text-white text-sm flex items-center justify-center">
+            {localCart.length}
+          </div>
+        )}
       </div>
-      {isCartOpen && <CartModal />}
+      {isCartOpen && localCart.length > 0 && <CartModal />}
     </div>
   );
 };

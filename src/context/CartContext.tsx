@@ -1,4 +1,4 @@
-// LocalCartContext.tsx
+"use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface CartItem {
@@ -21,17 +21,26 @@ const LocalCartContext = createContext<LocalCartContextType | undefined>(
 export const LocalCartProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [localCart, setLocalCart] = useState<CartItem[]>([]);
-
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      setLocalCart(JSON.parse(storedCart));
+  const [localCart, setLocalCart] = useState<CartItem[]>(() => {
+    if (typeof window !== "undefined") {
+      const storedCart = localStorage.getItem("cart");
+      if (storedCart) {
+        try {
+          return JSON.parse(storedCart);
+        } catch (error) {
+          console.error("Error parsing cart data from localStorage", error);
+        }
+      }
     }
-  }, []);
+    return [];
+  });
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(localCart));
+    try {
+      localStorage.setItem("cart", JSON.stringify(localCart));
+    } catch (error) {
+      console.error("Error saving cart data to localStorage", error);
+    }
   }, [localCart]);
 
   const updateLocalCart = (newCart: CartItem[]) => {

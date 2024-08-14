@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useLocalCart } from "@/context/CartContext";
 
 const Add = ({
   product,
@@ -14,6 +15,8 @@ const Add = ({
   const [stock, setStock] = useState<number>(0);
   const [showMessage, setShowMessage] = useState<boolean>(false);
 
+  const { localCart, setLocalCart } = useLocalCart();
+
   useEffect(() => {
     if (product && color && size) {
       const variant = product.variants.find(
@@ -21,14 +24,15 @@ const Add = ({
       );
       if (variant) {
         setStock(variant.quantity);
-        const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
         const cartItem = localCart.find((item: any) => item.id === variant.id);
         if (cartItem) {
           setQuantity(cartItem.quantity);
+        } else {
+          setQuantity(1);
         }
       }
     }
-  }, [product, color, size]);
+  }, [product, color, size, localCart]);
 
   const handleQuantity = (type: "i" | "d") => {
     if (type === "d" && quantity > 1) {
@@ -45,15 +49,15 @@ const Add = ({
         (v: any) => v.color === color && v.size === size
       );
       if (variant) {
-        const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
         const existingItemIndex = localCart.findIndex(
           (item: any) => item.id === variant.id
         );
 
+        const updatedCart = [...localCart];
         if (existingItemIndex >= 0) {
-          localCart[existingItemIndex].quantity = quantity;
+          updatedCart[existingItemIndex].quantity = quantity;
         } else {
-          localCart.push({
+          updatedCart.push({
             product: product,
             id: variant.id,
             color,
@@ -62,7 +66,7 @@ const Add = ({
           });
         }
 
-        localStorage.setItem("cart", JSON.stringify(localCart));
+        setLocalCart(updatedCart);
         setShowMessage(true);
         setTimeout(() => setShowMessage(false), 2000);
       }
