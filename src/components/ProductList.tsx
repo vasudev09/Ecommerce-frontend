@@ -165,9 +165,12 @@ const ProductList = async ({
                 </div>
               )}
             </Link>
-            <button className="rounded-2xl ring-1 ring-primary text-primary w-max py-2 px-4 text-xs hover:bg-primary hover:text-white">
+            <Link
+              href={"/" + product.slug}
+              className="block rounded-2xl ring-1 ring-primary text-primary w-max py-2 px-4 text-xs hover:bg-primary hover:text-white"
+            >
               Add to Cart
-            </button>
+            </Link>
           </div>
         );
       })}
