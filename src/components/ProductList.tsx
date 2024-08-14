@@ -23,6 +23,7 @@ const ProductList = async ({
     size: "",
     color: "",
     sort: "",
+    search: "",
   };
   if (tag && limit) {
     filters.tag = tag;
@@ -55,6 +56,9 @@ const ProductList = async ({
     if (searchParams.sort) {
       filters.sort = searchParams.sort;
     }
+    if (searchParams.search) {
+      filters.search = searchParams.search;
+    }
   }
 
   let error = false;
@@ -70,6 +74,7 @@ const ProductList = async ({
     size,
     color,
     sort,
+    search,
   }: any) {
     try {
       const res = await fetch(
@@ -81,7 +86,7 @@ const ProductList = async ({
           max ? "&max=" + max : ""
         }${size ? "&size=" + size : ""}${color ? "&color=" + color : ""}${
           sort ? "&sort=" + sort : ""
-        }`,
+        }${search ? "&search=" + search : ""}`,
         {
           cache: "no-cache",
         }
