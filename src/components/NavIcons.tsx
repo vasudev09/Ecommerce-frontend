@@ -11,7 +11,7 @@ import { useLocalCart } from "@/context/CartContext";
 const NavIcons = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { localCart, setLocalCart } = useLocalCart();
-
+  const [shouldRender, setShouldRender] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -36,8 +36,13 @@ const NavIcons = () => {
   };
 
   useEffect(() => {
+    setShouldRender(true);
     setIsCartOpen(false);
   }, [pathname]);
+
+  if (!shouldRender) {
+    return null;
+  }
 
   if (pathname === "/checkout") {
     return (
