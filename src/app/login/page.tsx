@@ -95,6 +95,7 @@ const LoginPage = () => {
         const content = await res.json();
         if (res.ok) {
           SetMessage(content.message);
+          setIsAuthenticated(true);
           router.push("/list");
         } else {
           setError(content.message);
